@@ -48,4 +48,5 @@ Sentence Transformers - Embeddings
 Les contributions sont les bienvenues !
 
 👤 Auteur
-Mohamedmgh
+@mohamedmgh
+
