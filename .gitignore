@@ -3,6 +3,7 @@ venv/
 env/
 ENV/
 .venv
+rag_croq_env/
 
 # Fichiers Python
 __pycache__/
