@@ -1,0 +1,44 @@
+# Environnements virtuels
+venv/
+env/
+ENV/
+.venv
+
+# Fichiers Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Tokens et secrets (IMPORTANT!)
+.env
+*.key
+secrets.txt
+
+# Base de données
+*.db
+*.sqlite
+*.sqlite3
+chroma_db/
+chroma_db3/
+*.faiss
+
+# Fichiers temporaires
+*.pdf
+temp_*.pdf
+*.log
+*.tmp
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/secrets.toml
