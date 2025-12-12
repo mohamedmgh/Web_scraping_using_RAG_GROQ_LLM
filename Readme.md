@@ -11,7 +11,7 @@ Un chatbot intelligent qui répond à vos questions basées sur vos documents PD
 📦 Installation
 1. Cloner le repository
 bash git clone https://github.com/mohamedmgh/Web_scraping_using_RAG_GROQ_LLM.git
-
+cd RAG_GROQ
 2. Créer un environnement virtuel
 bash python -m venv venv
 
