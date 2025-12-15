@@ -1,90 +1,51 @@
 pipeline {
-    agent any
+    // ↑ "Je suis un pipeline Jenkins"
     
-    // Variables d'environnement
+    agent any
+    // ↑ "Lance-moi sur n'importe quel serveur disponible"
+    
     environment {
         IMAGE_NAME = "rag-chatbot"
-        CONTAINER_NAME = "rag-chatbot-app"
-        PORT = "8501"
+        // ↑ "Le nom de mon image Docker"
     }
     
     stages {
-        // ÉTAPE 1 : Récupérer le code depuis Git
-        stage('📥 Checkout Code') {
+        // ↑ "Voici les étapes à suivre"
+        
+        stage('Checkout Code') {
+            // ↑ "ÉTAPE 1 : Télécharge le code"
             steps {
-                echo '🔍 Récupération du code depuis GitHub...'
                 checkout scm
+                // ↑ "Va chercher le code sur Git"
             }
         }
         
-        // ÉTAPE 2 : Construire l'image Docker
-        stage('🐳 Build Docker Image') {
+        stage('Build Docker Image') {
+            // ↑ "ÉTAPE 2 : Crée la boîte Docker"
             steps {
-                echo '🔨 Construction de l\'image Docker...'
-                script {
-                    // Construire l'image
-                    sh "docker build -t ${IMAGE_NAME}:latest ."
-                }
+                sh "docker build -t ${IMAGE_NAME} ."
+                // ↑ "Exécute la commande Docker build"
             }
         }
         
-        // ÉTAPE 3 : Arrêter l'ancien container s'il existe
-        stage('🛑 Stop Old Container') {
+        stage('Deploy Container') {
+            // ↑ "ÉTAPE 3 : Lance l'application"
             steps {
-                echo '🛑 Arrêt de l\'ancien container...'
-                script {
-                    sh """
-                        docker stop ${CONTAINER_NAME} || true
-                        docker rm ${CONTAINER_NAME} || true
-                    """
-                }
-            }
-        }
-        
-        // ÉTAPE 4 : Lancer le nouveau container
-        stage('🚀 Deploy Container') {
-            steps {
-                echo '🚀 Démarrage du nouveau container...'
-                script {
-                    sh """
-                        docker run -d \
-                          --name ${CONTAINER_NAME} \
-                          -p ${PORT}:${PORT} \
-                          -e GROQ_API_KEY=\${GROQ_API_KEY} \
-                          ${IMAGE_NAME}:latest
-                    """
-                }
-            }
-        }
-        
-        // ÉTAPE 5 : Vérifier que ça marche
-        stage('✅ Health Check') {
-            steps {
-                echo '✅ Vérification de l\'application...'
-                script {
-                    // Attendre 10 secondes que l'app démarre
-                    sh "sleep 10"
-                    // Tester si l'app répond
-                    sh "curl -f http://localhost:${PORT}/_stcore/health || exit 1"
-                }
+                sh "docker run -d --name chatbot ${IMAGE_NAME}"
+                // ↑ "Lance le container"
             }
         }
     }
     
-    // Que faire après (succès ou échec)
     post {
         success {
-            echo '✅ SUCCÈS ! L\'application est déployée sur http://localhost:8501'
+            // ↑ "Si tout s'est bien passé"
+            echo 'Succès !'
         }
         failure {
-            echo '❌ ÉCHEC ! Quelque chose s\'est mal passé.'
-            // Nettoyer en cas d'échec
-            sh "docker stop ${CONTAINER_NAME} || true"
-            sh "docker rm ${CONTAINER_NAME} || true"
-        }
-        always {
-            echo '🧹 Nettoyage des images non utilisées...'
-            sh "docker system prune -f"
+            // ↑ "Si quelque chose a planté"
+            echo 'Échec !'
         }
     }
 }
+// ↑ "Fin du pipeline Jenkins"
