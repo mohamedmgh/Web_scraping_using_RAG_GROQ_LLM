@@ -19,8 +19,11 @@ pipeline {
             steps {
                 echo '🔨 Construction de l\'image Docker...'
                 script {
-                    // Utiliser 'bat' au lieu de 'sh' pour Windows
-                    bat "docker build -t ${IMAGE_NAME}:latest ."
+                    // Désactiver BuildKit pour éviter les erreurs EOF
+                    bat """
+                        set DOCKER_BUILDKIT=0
+                        docker build -t ${IMAGE_NAME}:latest .
+                    """
                 }
             }
         }
