@@ -1,33 +1,33 @@
-# Environnements virtuels
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
 venv/
 env/
 ENV/
 .venv
 rag_croq_env/
 
-# Fichiers Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-
-# Tokens et secrets (IMPORTANT!)
+# Secrets et tokens
 .env
 *.key
 secrets.txt
 
-# Base de données
+# Bases de données et fichiers lourds
 *.db
 *.sqlite
 *.sqlite3
 chroma_db/
 chroma_db3/
 *.faiss
+*.index
 
-# Fichiers temporaires
+# PDFs et fichiers temporaires
 *.pdf
 temp_*.pdf
+uploaded_*.pdf
 *.log
 *.tmp
 
@@ -40,6 +40,17 @@ temp_*.pdf
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Docker
+*.tar
+*.gz
+
+
