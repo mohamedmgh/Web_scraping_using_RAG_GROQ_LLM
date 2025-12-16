@@ -14,6 +14,7 @@ rag_croq_env/
 .env
 *.key
 secrets.txt
+explication.txt
 
 # Bases de données et fichiers lourds
 *.db
@@ -23,6 +24,7 @@ chroma_db/
 chroma_db3/
 *.faiss
 *.index
+
 
 # PDFs et fichiers temporaires
 *.pdf
