@@ -1,37 +1,114 @@
+
+
 pipeline {
     agent any
-
+    
+    environment {
+        IMAGE_NAME = "rag-chatbot"
+        CONTAINER_NAME = "rag-chatbot-app"
+        PORT = "8501"
+        DOCKER_BUILDKIT = "0"
+    }
+    
     stages {
-        stage('🔍 Checkout Code') {
+        stage('📥 Checkout') {
             steps {
-                git url: 'https://github.com/mohamedmgh/Web_scraping_using_RAG_GROQ_LLM.git'
+                echo '📥 Récupération du code...'
+                checkout scm
             }
         }
-
-        stage('🐳 Build Docker Image') {
+        
+        stage('🧹 Cleanup') {
             steps {
-                bat 'docker build -t rag-chatbot:latest .'
+                echo '🧹 Nettoyage des anciennes images...'
+                script {
+                    bat """
+                        docker stop ${CONTAINER_NAME} 2>nul || echo "Aucun container"
+                        docker rm ${CONTAINER_NAME} 2>nul || echo "Aucun container"
+                        docker rmi ${IMAGE_NAME}:old 2>nul || echo "Aucune ancienne image"
+                    """
+                }
             }
         }
-
-        stage('🚀 Run Docker Container') {
+        
+        stage('🐳 Build Image') {
             steps {
-                bat '''
-                docker stop rag-chatbot || exit 0
-                docker rm rag-chatbot || exit 0
-                docker run -d -p 8501:8501 --name rag-chatbot rag-chatbot:latest
-                '''
+                echo '🐳 Construction de l\'image Docker (version légère)...'
+                script {
+                    // Tag l'ancienne image avant de construire
+                    bat "docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:old 2>nul || echo 'Première build'"
+                    
+                    // Build sans cache pour forcer la nouvelle version
+                    bat """
+                        set DOCKER_BUILDKIT=0
+                        docker build --no-cache -t ${IMAGE_NAME}:latest .
+                    """
+                    
+                    // Vérifier la taille de l'image
+                    bat "docker images ${IMAGE_NAME}:latest"
+                }
+            }
+        }
+        
+        stage('🚀 Deploy') {
+            steps {
+                echo '🚀 Déploiement du container...'
+                script {
+                    bat """
+                        docker run -d ^
+                          --name ${CONTAINER_NAME} ^
+                          -p ${PORT}:${PORT} ^
+                          --restart unless-stopped ^
+                          -e GROQ_API_KEY=%GROQ_API_KEY% ^
+                          ${IMAGE_NAME}:latest
+                    """
+                }
+            }
+        }
+        
+        stage('✅ Verify') {
+            steps {
+                echo '✅ Vérification du déploiement...'
+                script {
+                    bat "timeout /t 20 /nobreak"
+                    
+                    def status = bat(
+                        script: "docker ps --filter name=${CONTAINER_NAME} --format \"{{.Status}}\"",
+                        returnStdout: true
+                    ).trim()
+                    
+                    if (status.contains("Up")) {
+                        echo "✅ Application déployée avec succès!"
+                        bat "docker logs ${CONTAINER_NAME}"
+                    } else {
+                        error "❌ Le container n'a pas démarré"
+                    }
+                }
             }
         }
     }
-
+    
     post {
         success {
-            echo '🎉 Build and deploy finished!'
-            echo 'Open http://<YOUR_JENKINS_HOST>:8501 to view the app'
+            echo """
+            ====================================
+            ✅ DÉPLOIEMENT RÉUSSI !
+            ====================================
+            🌐 URL: http://localhost:8501
+            📦 Container: ${CONTAINER_NAME}
+            🐳 Image: ${IMAGE_NAME}:latest
+            ====================================
+            """
         }
         failure {
-            echo '❌ The pipeline failed. Check logs for errors.'
+            echo '❌ Échec du déploiement'
+            script {
+                bat "docker logs ${CONTAINER_NAME} 2>nul || echo 'Pas de logs'"
+            }
+        }
+        always {
+            echo '🧹 Nettoyage final...'
+            bat "docker image prune -f"
         }
     }
 }
