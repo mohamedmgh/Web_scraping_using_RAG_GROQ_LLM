@@ -1,5 +1,3 @@
-
-
 pipeline {
     agent any
     
@@ -18,19 +16,7 @@ pipeline {
             }
         }
         
-        stage('🧹 Cleanup') {
-            steps {
-                echo '🧹 Nettoyage des anciennes images...'
-                script {
-                    bat """
-                        docker stop ${CONTAINER_NAME} 2>nul || echo "Aucun container"
-                        docker rm ${CONTAINER_NAME} 2>nul || echo "Aucun container"
-                        docker rmi ${IMAGE_NAME}:old 2>nul || echo "Aucune ancienne image"
-                    """
-                }
-            }
-        }
-        
+       
         stage('🐳 Build Image') {
             steps {
                 echo '🐳 Construction de l\'image Docker (version légère)...'
