@@ -1,19 +1,29 @@
 FROM python:3.11-slim
 
-#Crée un dossier /app et va dedans
+# Crée un dossier /app et va dedans
 WORKDIR /app
 
-#Copie la liste des bibliothèques à installer
-COPY requirements.txt .
+# Installe les dépendances requises directement, incluant maintenant les bibliothèques de scraping
+RUN pip install \
+    streamlit \
+    langchain \
+    langchain-groq \
+    langchain-community \
+    langchain-text-splitters \
+    sentence-transformers \
+    faiss-cpu \
+    pypdf \
+    python-dotenv \
+    # Bibliothèques pour le Web Scraping :
+    requests \
+    beautifulsoup4 \
+    lxml
 
-#Installe tous les librairies
-RUN pip install -r requirements.txt
-
-# Copie tout  code
+# Copie tout le code
 COPY . .
 
 # Ouvre la porte 8501 pour accéder à l'app
 EXPOSE 8501
 
-# Lance application
+# Lance l'application
 CMD ["streamlit", "run", "web_scaping_rag.py"]
