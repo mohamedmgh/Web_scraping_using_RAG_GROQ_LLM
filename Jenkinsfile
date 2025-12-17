@@ -1,6 +1,11 @@
 pipeline {
     agent any
     
+    triggers {
+        pollSCM('* * * * *') // toutes les minutes
+    }
+
+    
     environment {
         IMAGE_NAME = "rag-chatbot"
         CONTAINER_NAME = "rag-chatbot-app"
