@@ -1,0 +1,40 @@
+# Python / venv
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+ENV/
+.venv/
+rag_croq_env/
+
+# Données / modèles / fichiers lourds
+data/
+datasets/
+models/
+scraped_data/
+downloads/
+outputs/
+webpages/
+*.db
+*.sqlite
+*.sqlite3
+*.faiss
+*.index
+*.pdf
+*.log
+*.tmp
+*.tar
+*.gz
+
+# IDE
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
