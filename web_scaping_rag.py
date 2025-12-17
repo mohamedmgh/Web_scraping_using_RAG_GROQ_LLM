@@ -34,7 +34,7 @@ if "chat_history" not in st.session_state:
 if "db" not in st.session_state:
     st.session_state.db = None
 
-# File uploader for PDF
+# File uploader for website URL
 
 st.header("Enter a Website URL")
 website_url = st.text_input("Website URL")
