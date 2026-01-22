@@ -129,7 +129,8 @@ Contexte (provenant de plusieurs sites):
 {context}
 
 Si la réponse ne peut pas être trouvée dans le contexte, dites "Je n'ai pas cette information dans les documents chargés."
-Lorsque vous citez une information, mentionnez la source si elle est disponible.
+Lorsque vous citez une information, mentionnez la source si elle est disponible .
+Lorsque vous citez une information, ne dit pas " Je n'ai pas cette information dans les documents chargés".
 [/INST]
 
 Question de l'utilisateur: {query}"""
